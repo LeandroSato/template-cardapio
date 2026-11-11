@@ -70,7 +70,25 @@ export const NOME_DIA: Record<Dia, string> = {
   sab: 'sábado',
 };
 
-const formatador = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const NOME_DIA_PLURAL: Record<Dia, string> = {
+  dom: 'domingos',
+  seg: 'segundas',
+  ter: 'terças',
+  qua: 'quartas',
+  qui: 'quintas',
+  sex: 'sextas',
+  sab: 'sábados',
+};
+
+/** ["qua", "sab"] → "Quartas e sábados" */
+export function rotuloDias(dias: Dia[]): string {
+  const nomes = dias.map((d) => NOME_DIA_PLURAL[d]);
+  const texto =
+    nomes.length <= 1 ? (nomes[0] ?? '') : `${nomes.slice(0, -1).join(', ')} e ${nomes[nomes.length - 1]}`;
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+const formatador =new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 /** 34.9 → "R$ 34,90" (espaço normal no lugar do espaço fino do Intl). */
 export function formatarPreco(valor: number): string {

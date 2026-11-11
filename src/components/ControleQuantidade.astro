@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  nome: string;
+}
+const { id, nome } = Astro.props;
+---
+
+<!-- O script carrinho.ts alterna entre "Adicionar" e o contador − n +. -->
+<div class="shrink-0" data-controle={id}>
+  <button
+    type="button"
+    data-adicionar={id}
+    data-botao-adicionar
+    class="min-h-11 rounded-lg border-2 border-parede px-4 font-bold text-parede active:bg-parede active:text-papel disabled:border-rejunte disabled:text-apagado"
+  >
+    Adicionar<span class="sr-only"> {nome}</span>
+  </button>
+  <div class="hidden items-center rounded-lg bg-parede text-papel" data-stepper>
+    <button type="button" data-remover={id} class="size-11 text-2xl leading-none" aria-label={`Tirar um ${nome}`}>−</button>
+    <span class="min-w-7 text-center font-bold tabular-nums" data-qtd aria-live="polite">0</span>
+    <button type="button" data-adicionar={id} class="size-11 text-2xl leading-none" aria-label={`Mais um ${nome}`}>+</button>
+  </div>
+</div>

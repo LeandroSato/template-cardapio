@@ -1,0 +1,56 @@
+---
+import type { Categoria } from '../lib/cardapio';
+import { formatarPreco, rotuloDias } from '../lib/cardapio';
+import ControleQuantidade from './ControleQuantidade.astro';
+
+interface Props {
+  categoria: Categoria;
+}
+const { categoria: c } = Astro.props;
+---
+
+<section id={c.id} aria-labelledby={`titulo-${c.id}`} class="mx-auto max-w-xl px-4 pt-8" data-secao-categoria>
+  <h2 id={`titulo-${c.id}`} class="font-letreiro text-[1.9rem] leading-tight text-parede">{c.nome}</h2>
+  {c.descricao && <p class="mt-1 text-apagado">{c.descricao}</p>}
+
+  <ul class="mt-3 divide-y divide-rejunte">
+    {c.itens.map((item) => (
+      <li class="flex gap-3 py-4" data-item={item.id} data-dias={item.dias?.join(' ')}>
+        {item.imagem ? (
+          <img
+            src={item.imagem}
+            alt={item.nome}
+            width="72"
+            height="72"
+            loading="lazy"
+            decoding="async"
+            class="size-18 shrink-0 rounded-lg object-cover"
+          />
+        ) : (
+          <div class="prato-vazio size-18 shrink-0 rounded-lg" aria-hidden="true"></div>
+        )}
+
+        <div class="min-w-0 flex-1">
+          <div class="flex items-end">
+            <h3 class="text-lg leading-snug font-bold">{item.nome}</h3>
+            <span class="pontilhado" aria-hidden="true"></span>
+            <p class="font-letreiro shrink-0 text-xl text-parede">{formatarPreco(item.preco)}</p>
+          </div>
+          {item.descricao && <p class="mt-1 text-[0.95rem] leading-snug text-apagado">{item.descricao}</p>}
+
+          <div class="mt-3 flex items-center justify-between gap-3">
+            {item.dias?.length ? (
+              <p class="text-sm font-bold text-parede" data-rotulo-dias>
+                <span data-rotulo-hoje class="mr-1 hidden rounded bg-gema px-1.5 py-0.5 text-tinta">Hoje</span>
+                {rotuloDias(item.dias)}
+              </p>
+            ) : (
+              <span></span>
+            )}
+            <ControleQuantidade id={item.id} nome={item.nome} />
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
