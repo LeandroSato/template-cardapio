@@ -2,10 +2,12 @@
 import { cardapio, DIAS, enderecoCompleto, linkComoChegar, linkMapaEmbed, rotuloDias } from '../lib/cardapio';
 const { endereco: e, contato, horarios, restaurante: r } = cardapio;
 const telefoneLink = `tel:+55${contato.telefone.replace(/\D/g, '')}`;
-const diasFechados = DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)));
+// "11:00" → "11h", "18:30" → "18h30"
+const horaCurta = (hhmm: string) => hhmm.replace(/:00$/, 'h').replace(':', 'h');
+const diasFechados =DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)));
 ---
 
-<section id="onde-estamos" aria-labelledby="titulo-onde" class="mx-auto mt-10 max-w-xl px-4">
+<section id="onde-estamos" aria-labelledby="titulo-onde" class="mx-auto mt-10 max-w-xl px-4" data-secao-categoria>
   <h2 id="titulo-onde" class="font-letreiro text-2xl text-parede">Onde estamos</h2>
 
   <address class="mt-3 text-lg leading-snug not-italic">
@@ -32,7 +34,7 @@ const diasFechados = DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)
     {horarios.map((h) => (
       <div class="flex justify-between gap-4 py-2.5" data-horario={h.dias.join(' ')}>
         <dt>{h.rotulo}</dt>
-        <dd class="font-bold tabular-nums">{h.abre.replace(':', 'h')} às {h.fecha.replace(':', 'h')}</dd>
+        <dd class="font-bold tabular-nums">{horaCurta(h.abre)} às {horaCurta(h.fecha)}</dd>
       </div>
     ))}
     {diasFechados.length > 0 && (

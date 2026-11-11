@@ -64,7 +64,7 @@ function desenhar() {
   const botaoCapa = document.querySelector<HTMLButtonElement>('[data-prato-hoje-botao]');
   if (botaoCapa) {
     const qtd = comanda.get(botaoCapa.dataset.adicionar ?? '') ?? 0;
-    botaoCapa.textContent = qtd > 0 ? `Na comanda: ${qtd} · adicionar mais um` : 'Adicionar à comanda';
+    botaoCapa.textContent = qtd > 0 ? `+ Mais um (${qtd})` : 'Adicionar';
   }
 
   // Barra fixa

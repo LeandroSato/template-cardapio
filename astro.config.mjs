@@ -8,6 +8,8 @@ import cardapio from './src/data/cardapio.json' with { type: 'json' };
 export default defineConfig({
   site: cardapio.restaurante.url,
   integrations: [sitemap()],
+  // A barra de ferramentas do Astro cobre o botão fixo de pedido no celular.
+  devToolbar: { enabled: false },
   vite: {
     plugins: [tailwindcss()],
   },
