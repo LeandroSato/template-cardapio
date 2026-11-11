@@ -51,6 +51,20 @@ Depois de editar o JSON:
 3. Rode `npm run og` para gerar a imagem de compartilhamento (`public/og.png`).
 4. Confira com o **Checklist - QA** do vault.
 
+## Fluxo de mudanças (sempre por pull request)
+
+A `main` é o que está no ar. **Nunca dê push direto nela.**
+
+```bash
+git switch -c ajusta-precos         # 1. branch para a mudança
+# edita, testa com npm run dev
+git commit -am "Ajusta preços de dezembro"
+git push -u origin ajusta-precos    # 2. sobe o branch
+gh pr create --fill                 # 3. abre o pull request
+```
+
+O Cloudflare gera uma **prévia** do branch (`ajusta-precos.<projeto>.pages.dev`). Mande essa prévia ao cliente e faça o merge do PR só depois de conferir. O merge publica no ar.
+
 ## Deploy (Cloudflare Pages)
 
 1. Suba o repositório no GitHub (privado).
