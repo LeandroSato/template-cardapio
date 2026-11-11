@@ -1,0 +1,32 @@
+---
+import '@fontsource/alfa-slab-one/400.css';
+import '@fontsource/atkinson-hyperlegible/400.css';
+import '@fontsource/atkinson-hyperlegible/700.css';
+import '@fontsource/courier-prime/400.css';
+import '@fontsource/courier-prime/700.css';
+import '../styles/global.css';
+import SeoLocal from '../components/SeoLocal.astro';
+import { cardapio } from '../lib/cardapio';
+
+const { marca } = cardapio;
+const variaveis = [
+  `--marca-primaria:${marca.primaria}`,
+  `--marca-destaque:${marca.destaque}`,
+  `--marca-fundo:${marca.fundo}`,
+  `--marca-texto:${marca.texto}`,
+].join(';');
+---
+
+<!doctype html>
+<html lang="pt-BR" style={variaveis}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content={marca.primaria} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <SeoLocal />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

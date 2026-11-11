@@ -1,0 +1,22 @@
+---
+import { cardapio } from '../lib/cardapio';
+---
+
+<nav
+  aria-label="Categorias do cardápio"
+  class="sticky top-0 z-30 border-b border-rejunte bg-papel/95 backdrop-blur supports-[backdrop-filter]:bg-papel/85"
+>
+  <ul class="mx-auto flex max-w-xl gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" data-nav-categorias>
+    {cardapio.categorias.map((c) => (
+      <li class="shrink-0">
+        <a
+          href={`#${c.id}`}
+          data-nav-link={c.id}
+          class="flex min-h-11 items-center rounded-full border-2 border-parede px-4 font-bold whitespace-nowrap text-parede transition-colors aria-[current=true]:bg-parede aria-[current=true]:text-papel"
+        >
+          {c.nome}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

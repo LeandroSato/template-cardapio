@@ -1,0 +1,86 @@
+---
+import { cardapio, DIAS } from '../lib/cardapio';
+
+const { restaurante: r, endereco: e, contato, horarios, categorias } = cardapio;
+
+const titulo = `${r.nome} – ${r.tipoComida} na ${e.bairro}, ${e.cidade} | Cardápio e pedidos`;
+const descricao = r.descricao;
+const url = new URL('/', r.url).href;
+const imagem = new URL(r.imagemOG, r.url).href;
+
+const DIA_SCHEMA: Record<string, string> = {
+  dom: 'Sunday', seg: 'Monday', ter: 'Tuesday', qua: 'Wednesday',
+  qui: 'Thursday', sex: 'Friday', sab: 'Saturday',
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  '@id': `${url}#restaurante`,
+  name: r.nome,
+  description: r.descricao,
+  url,
+  image: imagem,
+  logo: new URL(r.logo, r.url).href,
+  telephone: `+${contato.whatsapp}`,
+  servesCuisine: r.tipoComida,
+  priceRange: r.faixaPreco,
+  acceptsReservations: false,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: e.rua,
+    addressLocality: e.cidade,
+    addressRegion: e.uf,
+    postalCode: e.cep,
+    addressCountry: 'BR',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: e.lat, longitude: e.lng },
+  openingHoursSpecification: horarios.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.dias.filter((d) => DIAS.includes(d)).map((d) => DIA_SCHEMA[d]),
+    opens: h.abre,
+    closes: h.fecha,
+  })),
+  hasMenu: {
+    '@type': 'Menu',
+    name: `Cardápio ${r.nome}`,
+    inLanguage: 'pt-BR',
+    hasMenuSection: categorias.map((c) => ({
+      '@type': 'MenuSection',
+      name: c.nome,
+      ...(c.descricao ? { description: c.descricao } : {}),
+      hasMenuItem: c.itens.map((i) => ({
+        '@type': 'MenuItem',
+        name: i.nome,
+        ...(i.descricao ? { description: i.descricao } : {}),
+        offers: {
+          '@type': 'Offer',
+          price: i.preco.toFixed(2),
+          priceCurrency: 'BRL',
+        },
+      })),
+    })),
+  },
+};
+
+// Evita que um "</script>" dentro do texto quebre a tag.
+const jsonLdSeguro = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+---
+
+<title>{titulo}</title>
+<meta name="description" content={descricao} />
+<link rel="canonical" href={url} />
+
+<meta property="og:type" content="restaurant" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content={r.nome} />
+<meta property="og:title" content={`${r.nome} – ${r.tipoComida}`} />
+<meta property="og:description" content={r.tagline} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={imagem} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${r.nome}, ${r.tipoComida.toLowerCase()} na ${e.bairro}`} />
+<meta name="twitter:card" content="summary_large_image" />
+
+<script type="application/ld+json" set:html={jsonLdSeguro} />

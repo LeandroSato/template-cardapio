@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sabor da Vila">
+  <!-- Logo provisório: panela com vapor. Trocar pelo logo do cliente. -->
+  <circle cx="32" cy="32" r="32" fill="#1F4A3A"/>
+  <path d="M24 13c-3 3 3 5 0 9M32 11c-3 3 3 6 0 10M40 13c-3 3 3 5 0 9" fill="none" stroke="#FAFAF5" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="12" y="29" width="40" height="5" rx="2.5" fill="#F2B33D"/>
+  <path d="M15 34h34v6a10 10 0 0 1-10 10H25a10 10 0 0 1-10-10z" fill="#FAFAF5"/>
+  <rect x="7" y="36" width="8" height="4" rx="2" fill="#FAFAF5"/>
+  <rect x="49" y="36" width="8" height="4" rx="2" fill="#FAFAF5"/>
+</svg>

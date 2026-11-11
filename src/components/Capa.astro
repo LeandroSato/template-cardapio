@@ -1,0 +1,53 @@
+---
+import { cardapio, formatarPreco } from '../lib/cardapio';
+
+const { restaurante: r, endereco: e, categorias } = cardapio;
+// O primeiro item com "dias" serve de conteúdo sem JavaScript;
+// o script hoje.ts troca pelo prato do dia de verdade.
+const pratosDoDia = categorias.flatMap((c) => c.itens.filter((i) => i.dias?.length));
+const padrao = pratosDoDia[0];
+---
+
+<header class="bg-parede text-papel">
+  <div class="mx-auto flex max-w-xl items-center gap-3 px-4 pt-5 pb-2">
+    <img src={r.logo} alt="" width="44" height="44" class="size-11 shrink-0 rounded-full bg-papel" />
+    <div class="min-w-0">
+      <p class="font-letreiro text-xl leading-tight">{r.nome}</p>
+      <p class="text-sm opacity-85">{r.tipoComida} · {e.bairro}</p>
+    </div>
+    <p
+      data-status-aberto
+      class="ml-auto hidden shrink-0 rounded-full border border-papel/40 px-3 py-1 text-sm font-bold"
+    ></p>
+  </div>
+
+  {padrao && (
+    <section
+      aria-labelledby="prato-hoje-nome"
+      class="mx-auto max-w-xl px-4 pt-6 pb-8"
+      data-prato-hoje
+    >
+      <p class="text-sm font-bold tracking-wide text-gema uppercase" data-prato-hoje-dia>Prato do dia</p>
+      <h1 id="prato-hoje-nome" class="font-letreiro mt-2 text-[2.6rem] leading-[1.02] text-balance" data-prato-hoje-nome>
+        {padrao.nome}
+      </h1>
+      <p class="mt-3 max-w-prose text-base leading-relaxed opacity-90" data-prato-hoje-descricao>
+        {padrao.descricao}
+      </p>
+      <div class="mt-5 flex items-center gap-4" data-prato-hoje-acoes>
+        <p class="font-letreiro text-3xl text-gema" data-prato-hoje-preco>{formatarPreco(padrao.preco)}</p>
+        <button
+          type="button"
+          class="min-h-12 rounded-lg bg-gema px-5 font-bold text-tinta shadow-[0_3px_0_rgb(0_0_0/0.25)] active:translate-y-[2px] active:shadow-none"
+          data-adicionar={padrao.id}
+          data-prato-hoje-botao
+        >
+          Adicionar à comanda
+        </button>
+      </div>
+      <p class="mt-4 hidden text-base" data-prato-hoje-aviso></p>
+    </section>
+  )}
+
+  <div class="azulejo h-7 border-t-4 border-parede" aria-hidden="true"></div>
+</header>

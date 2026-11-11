@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+/*
+  As cores vêm do cardapio.json (bloco "marca") e são injetadas em :root
+  pelo layout Base.astro. Aqui só damos nomes do mundo do restaurante:
+  parede (tinta verde do salão), gema (destaque), papel (fundo), tinta (texto).
+*/
+@theme inline {
+  --color-parede: var(--marca-primaria);
+  --color-gema: var(--marca-destaque);
+  --color-papel: var(--marca-fundo);
+  --color-tinta: var(--marca-texto);
+  --color-rejunte: color-mix(in oklab, var(--marca-texto) 14%, var(--marca-fundo));
+  --color-apagado: color-mix(in oklab, var(--marca-texto) 68%, var(--marca-fundo));
+  --color-folha: #ffffff;
+
+  --font-letreiro: "Alfa Slab One", Rockwell, Georgia, serif;
+  --font-corpo: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-comanda: "Courier Prime", "Courier New", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* espaço para a barra de categorias fixa ao pular para uma seção */
+    scroll-padding-top: 4.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-papel text-tinta font-corpo antialiased;
+  }
+  :focus-visible {
+    outline: 3px solid var(--marca-destaque);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Faixa de azulejo branco com rejunte, como a barra das paredes de boteco. */
+  .azulejo {
+    background-color: var(--color-folha);
+    background-image:
+      linear-gradient(var(--color-rejunte) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-rejunte) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: -1px -1px;
+  }
+
+  /* Placeholder de foto: prato visto de cima. Some quando o item tem imagem. */
+  .prato-vazio {
+    background:
+      radial-gradient(circle at 50% 50%,
+        var(--color-folha) 0 34%,
+        var(--color-rejunte) 34.5% 36%,
+        var(--color-folha) 36.5% 52%,
+        transparent 52.5%),
+      color-mix(in oklab, var(--marca-primaria) 12%, var(--marca-fundo));
+  }
+
+  /* Linha pontilhada entre nome e preço, como no cardápio pintado na parede. */
+  .pontilhado {
+    flex: 1 1 auto;
+    min-width: 1.5rem;
+    margin: 0 0.4rem 0.35rem;
+    border-bottom: 2px dotted var(--color-rejunte);
+  }
+
+  /* Borda serrilhada de comanda destacada do bloco. */
+  .serrilha {
+    --dente: 10px;
+    -webkit-mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--dente) 51% repeat-x,
+      linear-gradient(#000 0 0) bottom / 100% calc(100% - var(--dente) / 2 + 1px) no-repeat;
+    mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--dente) 51% repeat-x,
+      linear-gradient(#000 0 0) bottom / 100% calc(100% - var(--dente) / 2 + 1px) no-repeat;
+  }
+}
