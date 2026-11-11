@@ -1,0 +1,17 @@
+# build
+dist/
+.astro/
+
+# dependências
+node_modules/
+
+# segredos (nunca commitar)
+.env
+.env.*
+!.env.example
+
+# sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
