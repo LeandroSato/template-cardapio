@@ -1,0 +1,93 @@
+{
+  "restaurante": {
+    "slug": "sabor-da-vila",
+    "nome": "Sabor da Vila",
+    "tipoComida": "Comida caseira brasileira",
+    "tagline": "Prato feito, porção e sobremesa de casa, no coração da Saúde.",
+    "descricao": "Restaurante de comida caseira na Saúde, Zona Sul de São Paulo. Prato do dia de segunda a sábado, porções, sucos e sobremesas. Peça pelo WhatsApp ou retire no balcão.",
+    "logo": "/logo.svg",
+    "imagemOG": "/og.png",
+    "url": "https://sabor-da-vila.pages.dev",
+    "faixaPreco": "R$ 5 a R$ 45"
+  },
+  "marca": {
+    "primaria": "#1F4A3A",
+    "destaque": "#F2B33D",
+    "fundo": "#FAFAF5",
+    "texto": "#1B1F1C"
+  },
+  "contato": {
+    "whatsapp": "5511900000000",
+    "telefone": "(11) 90000-0000"
+  },
+  "endereco": {
+    "rua": "Rua do Exemplo, 123",
+    "bairro": "Saúde",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "cep": "04000-000",
+    "referencia": "A duas quadras do metrô Praça da Árvore",
+    "lat": -23.6106,
+    "lng": -46.6378
+  },
+  "horarios": [
+    { "rotulo": "Segunda a sexta", "dias": ["seg", "ter", "qua", "qui", "sex"], "abre": "11:00", "fecha": "15:00" },
+    { "rotulo": "Sábado", "dias": ["sab"], "abre": "11:00", "fecha": "16:00" }
+  ],
+  "delivery": {
+    "ifood": "https://www.ifood.com.br/",
+    "noventaENoveFood": "https://99app.com/food/",
+    "keeta": ""
+  },
+  "pedido": {
+    "pedirNome": true,
+    "rodapeMensagem": "Pedido feito pelo cardápio digital"
+  },
+  "categorias": [
+    {
+      "id": "pratos-do-dia",
+      "nome": "Pratos do dia",
+      "descricao": "Um prato por dia, servido com arroz, feijão e salada.",
+      "itens": [
+        { "id": "virado-a-paulista", "nome": "Virado à paulista", "descricao": "Tutu de feijão, bisteca, couve refogada, ovo frito, banana à milanesa e torresmo.", "preco": 34.9, "dias": ["seg"], "imagem": "" },
+        { "id": "bife-a-role", "nome": "Bife à rolê com purê", "descricao": "Bife recheado com bacon, cenoura e cebola, no molho de tomate, com purê de batata.", "preco": 36.9, "dias": ["ter"], "imagem": "" },
+        { "id": "feijoada", "nome": "Feijoada completa", "descricao": "Feijão preto com carnes, couve, farofa, laranja e torresmo.", "preco": 39.9, "dias": ["qua", "sab"], "imagem": "" },
+        { "id": "macarronada-frango", "nome": "Macarronada com frango assado", "descricao": "Espaguete ao sugo com coxa e sobrecoxa assadas.", "preco": 32.9, "dias": ["qui"], "imagem": "" },
+        { "id": "file-merluza", "nome": "Filé de merluza à dorê", "descricao": "Peixe empanado no ovo, com arroz, purê e salada de alface e tomate.", "preco": 37.9, "dias": ["sex"], "imagem": "" }
+      ]
+    },
+    {
+      "id": "porcoes",
+      "nome": "Porções",
+      "descricao": "Para dividir na mesa.",
+      "itens": [
+        { "id": "mandioca-frita", "nome": "Mandioca frita", "descricao": "500 g, sequinha, com sal grosso.", "preco": 26.9, "imagem": "" },
+        { "id": "torresmo", "nome": "Torresmo de rolo", "descricao": "400 g, pururuca, com limão.", "preco": 32.9, "imagem": "" },
+        { "id": "calabresa", "nome": "Calabresa acebolada", "descricao": "500 g, na chapa, com pão francês.", "preco": 34.9, "imagem": "" },
+        { "id": "pasteis-carne", "nome": "Pastéis de carne", "descricao": "6 unidades, massa fininha, carne moída temperada.", "preco": 28.9, "imagem": "" }
+      ]
+    },
+    {
+      "id": "bebidas",
+      "nome": "Bebidas",
+      "descricao": "",
+      "itens": [
+        { "id": "suco-laranja", "nome": "Suco de laranja natural", "descricao": "Copo de 400 ml, espremido na hora.", "preco": 10.9, "imagem": "" },
+        { "id": "refri-lata", "nome": "Refrigerante lata", "descricao": "350 ml. Pergunte os sabores.", "preco": 6.9, "imagem": "" },
+        { "id": "refri-2l", "nome": "Refrigerante 2 L", "descricao": "Para a família toda.", "preco": 15.9, "imagem": "" },
+        { "id": "agua", "nome": "Água mineral", "descricao": "500 ml, com ou sem gás.", "preco": 4.5, "imagem": "" },
+        { "id": "cerveja-600", "nome": "Cerveja 600 ml", "descricao": "Garrafa gelada. Venda proibida para menores de 18 anos.", "preco": 16.9, "imagem": "" }
+      ]
+    },
+    {
+      "id": "sobremesas",
+      "nome": "Sobremesas",
+      "descricao": "Feitas aqui, todo dia.",
+      "itens": [
+        { "id": "pudim", "nome": "Pudim de leite", "descricao": "Fatia generosa, calda de caramelo.", "preco": 12.9, "imagem": "" },
+        { "id": "mousse-maracuja", "nome": "Mousse de maracujá", "descricao": "Pote de 150 ml.", "preco": 10.9, "imagem": "" },
+        { "id": "doce-abobora", "nome": "Doce de abóbora com coco", "descricao": "Receita de família, em pedaços.", "preco": 9.9, "imagem": "" }
+      ]
+    }
+  ]
+}
