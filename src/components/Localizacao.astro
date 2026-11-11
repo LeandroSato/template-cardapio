@@ -1,0 +1,65 @@
+---
+import { cardapio, DIAS, enderecoCompleto, linkComoChegar, linkMapaEmbed, rotuloDias } from '../lib/cardapio';
+const { endereco: e, contato, horarios, restaurante: r } = cardapio;
+const telefoneLink = `tel:+55${contato.telefone.replace(/\D/g, '')}`;
+const diasFechados = DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)));
+---
+
+<section id="onde-estamos" aria-labelledby="titulo-onde" class="mx-auto mt-10 max-w-xl px-4">
+  <h2 id="titulo-onde" class="font-letreiro text-2xl text-parede">Onde estamos</h2>
+
+  <address class="mt-3 text-lg leading-snug not-italic">
+    {e.rua}<br />
+    {e.bairro}, {e.cidade} – {e.uf}<br />
+    <span class="text-base text-apagado">CEP {e.cep}</span>
+  </address>
+  {e.referencia && <p class="mt-2 text-apagado">{e.referencia}</p>}
+
+  <div class="mt-4 flex flex-wrap gap-3">
+    <a
+      href={linkComoChegar()}
+      target="_blank"
+      rel="noopener"
+      class="flex min-h-12 items-center rounded-lg bg-parede px-5 font-bold text-papel"
+    >Como chegar<span class="sr-only"> (abre o Google Maps)</span></a>
+    <a href={telefoneLink} class="flex min-h-12 items-center rounded-lg border-2 border-parede px-5 font-bold text-parede">
+      Ligar {contato.telefone}
+    </a>
+  </div>
+
+  <h3 class="mt-8 text-lg font-bold">Horário de funcionamento</h3>
+  <dl class="mt-2 divide-y divide-rejunte border-y border-rejunte">
+    {horarios.map((h) => (
+      <div class="flex justify-between gap-4 py-2.5" data-horario={h.dias.join(' ')}>
+        <dt>{h.rotulo}</dt>
+        <dd class="font-bold tabular-nums">{h.abre.replace(':', 'h')} às {h.fecha.replace(':', 'h')}</dd>
+      </div>
+    ))}
+    {diasFechados.length > 0 && (
+      <div class="flex justify-between gap-4 py-2.5" data-horario={diasFechados.join(' ')}>
+        <dt>{rotuloDias(diasFechados)}</dt>
+        <dd class="font-bold">Fechado</dd>
+      </div>
+    )}
+  </dl>
+
+  <!-- O mapa só carrega quando a pessoa pede: a página abre mais rápido no 4G. -->
+  <div class="relative mt-6 aspect-[4/3] overflow-hidden rounded-xl border-2 border-rejunte bg-rejunte/40" data-mapa>
+    <button
+      type="button"
+      data-carregar-mapa={linkMapaEmbed()}
+      class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center"
+    >
+      <span class="font-letreiro text-xl text-parede">Ver no mapa</span>
+      <span class="text-sm text-apagado">{enderecoCompleto()}</span>
+    </button>
+    <noscript>
+      <iframe
+        src={linkMapaEmbed()}
+        title={`Mapa: ${r.nome}`}
+        loading="lazy"
+        class="absolute inset-0 size-full border-0"
+      ></iframe>
+    </noscript>
+  </div>
+</section>

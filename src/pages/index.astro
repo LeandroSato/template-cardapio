@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import Capa from '../components/Capa.astro';
+import NavCategorias from '../components/NavCategorias.astro';
+import Categoria from '../components/Categoria.astro';
+import Delivery from '../components/Delivery.astro';
+import Localizacao from '../components/Localizacao.astro';
+import Comanda from '../components/Comanda.astro';
+import { cardapio } from '../lib/cardapio';
+
+const { restaurante: r, categorias } = cardapio;
+const ano = new Date().getFullYear();
+---
+
+<Base>
+  <Capa />
+  <NavCategorias />
+
+  <main class="pb-32">
+    {categorias.map((c) => <Categoria categoria={c} />)}
+    <Delivery />
+    <Localizacao />
+
+    <footer class="mx-auto mt-12 max-w-xl px-4 text-sm text-apagado">
+      <p>Preços sujeitos a alteração sem aviso. Imagens meramente ilustrativas.</p>
+      <p class="mt-1">© {ano} {r.nome}</p>
+    </footer>
+  </main>
+
+  <Comanda />
+</Base>
+
+<script>
+  import { iniciarHoje } from '../scripts/hoje';
+  import { iniciarCarrinho } from '../scripts/carrinho';
+  import { iniciarNavegacao } from '../scripts/navegacao';
+
+  const dia = iniciarHoje();
+  iniciarCarrinho(dia);
+  iniciarNavegacao();
+</script>
