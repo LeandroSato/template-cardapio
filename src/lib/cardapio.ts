@@ -19,7 +19,7 @@ export interface Categoria {
   itens: Item[];
 }
 
-export interface Horario {
+interface Horario {
   rotulo: string;
   dias: Dia[];
   abre: string;
