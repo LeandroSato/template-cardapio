@@ -1,0 +1,153 @@
+name: Esteira de PRs
+
+# Fila automática de pull requests:
+# 1. CI passou num PR para a main → faz merge (squash) e apaga a branch.
+# 2. Entrou coisa nova na main → atualiza a branch de todos os PRs abertos, o que roda o CI de novo.
+#    Se a atualização der conflito, o Claude resolve, testa e dá push (o CI roda e a fila segue).
+#
+# Não faz merge de: rascunho (draft), PR com o rótulo "segurar", PR de outra pessoa,
+# e atualizações grandes do Dependabot (versão maior, ex.: Astro 6 → 7), que esperam por você.
+#
+# Usa o segredo AUTOMACAO_TOKEN (token de acesso pessoal) para que o merge e a atualização
+# disparem os outros workflows; com o token padrão do GitHub eles não disparariam.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+  id-token: write
+
+concurrency:
+  group: esteira
+  cancel-in-progress: false
+
+env:
+  DONO: LeandroSato
+
+jobs:
+  mergear:
+    name: mergear
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Mergear se estiver tudo certo
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMACAO_TOKEN }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open \
+            --json number,isDraft,baseRefName,headRefOid,author,labels \
+            --jq '.[0] // empty')
+          [ -z "$pr" ] && { echo "Nenhum PR aberto para $BRANCH."; exit 0; }
+
+          num=$(jq -r .number <<<"$pr")
+          base=$(jq -r .baseRefName <<<"$pr")
+          draft=$(jq -r .isDraft <<<"$pr")
+          head=$(jq -r .headRefOid <<<"$pr")
+          autor=$(jq -r .author.login <<<"$pr")
+          segurar=$(jq -r '[.labels[].name] | index("segurar") != null' <<<"$pr")
+
+          motivo=""
+          [ "$base" != "main" ] && motivo="a base não é a main ($base)"
+          [ "$draft" = "true" ] && motivo="é rascunho"
+          [ "$segurar" = "true" ] && motivo="tem o rótulo segurar"
+          [ "$head" != "$SHA" ] && motivo="o CI que passou não é do último commit"
+          case "$autor" in
+            "$DONO") ;;
+            "app/dependabot"|"dependabot[bot]")
+              case "$BRANCH" in *atualizacoes-menores*) ;; *) motivo="atualização grande do Dependabot espera por você" ;; esac ;;
+            *) motivo="PR de $autor" ;;
+          esac
+
+          if [ -n "$motivo" ]; then
+            echo "PR #$num não vai para merge automático: $motivo."
+            exit 0
+          fi
+
+          gh pr merge "$num" --repo "$REPO" --squash --delete-branch --match-head-commit "$SHA"
+          echo "PR #$num mergeado."
+
+  atualizar:
+    name: atualizar
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      conflitos: ${{ steps.atualizar.outputs.conflitos }}
+    steps:
+      - name: Atualizar as branches dos PRs abertos
+        id: atualizar
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMACAO_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          conflitos='[]'
+          for num in $(gh pr list --repo "$REPO" --base main --state open --json number,isDraft --jq '.[] | select(.isDraft | not) | .number'); do
+            if saida=$(gh api -X PUT "repos/$REPO/pulls/$num/update-branch" 2>&1); then
+              echo "PR #$num atualizado com a main."
+            elif grep -qi "conflict" <<<"$saida"; then
+              echo "PR #$num tem conflito com a main."
+              branch=$(gh pr view "$num" --repo "$REPO" --json headRefName --jq .headRefName)
+              conflitos=$(jq -c --arg b "$branch" --argjson n "$num" '. + [{numero: $n, branch: $b}]' <<<"$conflitos")
+            else
+              echo "PR #$num: $saida"
+            fi
+          done
+          echo "conflitos=$conflitos" >> "$GITHUB_OUTPUT"
+
+  resolver-conflito:
+    name: resolver conflito
+    needs: atualizar
+    if: needs.atualizar.outputs.conflitos != '[]' && needs.atualizar.outputs.conflitos != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      max-parallel: 1
+      matrix:
+        pr: ${{ fromJSON(needs.atualizar.outputs.conflitos) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.pr.branch }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Claude resolve o conflito
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: >-
+            --max-turns 40
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(npm ci:*),Bash(npm run:*),Bash(npx:*),Bash(git:*),Bash(gh pr comment:*)"
+          prompt: |
+            O PR #${{ matrix.pr.numero }} (branch ${{ matrix.pr.branch }}) tem conflito com a main.
+            1. Rode `git fetch origin main` e `git merge origin/main`.
+            2. Resolva cada conflito mantendo a intenção das duas partes: o que já entrou na main
+               e o que este PR quer fazer. Na dúvida, prefira a main e deixe a mudança do PR por cima.
+               Nunca altere nada em `.github/`.
+            3. Rode `npm ci`, `npm run check`, `npm run knip` e `npm run build`.
+            4. Conclua o merge com a mensagem "conserto automático: resolve conflito com a main" e dê
+               push na própria branch. Nunca dê push na main.
+            5. Comente no PR (`gh pr comment ${{ matrix.pr.numero }} --body "..."`), em até 5 linhas e
+               tom de quem fala com um colega: o que conflitou e como resolveu.
+               Se não conseguir resolver com segurança, não dê push: só comente explicando.
