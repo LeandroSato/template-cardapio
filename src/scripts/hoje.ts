@@ -6,7 +6,7 @@ const SEMANA: Record<string, Dia> = { Sun: 'dom', Mon: 'seg', Tue: 'ter', Wed: '
  * Dia e hora em São Paulo, não no fuso do celular.
  * Para demonstrar ao cliente: ?dia=qua&hora=12:30 na URL força um dia/horário.
  */
-export function agora(): { dia: Dia; minutos: number } {
+function agora(): { dia: Dia; minutos: number } {
   const partes = new Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Sao_Paulo',
     weekday: 'short',

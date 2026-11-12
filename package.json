@@ -8,7 +8,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "og": "node scripts/gerar-og.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "knip": "knip",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
@@ -26,6 +29,10 @@
     "node": ">=22.12.0"
   },
   "devDependencies": {
-    "sharp": "0.34.5"
+    "@astrojs/check": "0.9.12",
+    "@playwright/test": "1.65.0",
+    "knip": "6.45.1",
+    "sharp": "0.34.5",
+    "typescript": "6.0.3"
   }
 }
