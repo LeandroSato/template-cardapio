@@ -48,8 +48,5 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-      # Hoje há falhas conhecidas no Astro 6 e no sharp que pedem upgrade de versão maior.
-      # Enquanto isso, o audit só avisa. Depois do upgrade, remover o continue-on-error.
       - name: Dependências vulneráveis (npm audit)
-        continue-on-error: true
         run: npm audit --audit-level=high

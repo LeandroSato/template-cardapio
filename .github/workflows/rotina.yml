@@ -46,9 +46,7 @@ jobs:
       - name: Testes E2E no site no ar
         run: BASE_URL="$SITE_URL" npm run test:e2e
 
-      # Enquanto o upgrade do Astro não sai, o audit só avisa (aparece no resumo da execução).
       - name: Dependências vulneráveis (npm audit)
-        continue-on-error: true
         run: npm audit --audit-level=high
 
       - name: Avisar com uma issue
