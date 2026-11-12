@@ -1,0 +1,67 @@
+name: Rotina
+
+# Toda segunda às 9h (São Paulo) confere a main e o site no ar.
+# Se algo falhar, abre (ou atualiza) uma issue com o rótulo "rotina" — o GitHub te avisa —
+# e o workflow "Conserto automático" tenta corrigir.
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  rotina:
+    name: rotina
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: URL do site no ar
+        run: echo "SITE_URL=$(node -p "require('./src/data/cardapio.json').restaurante.url")" >> "$GITHUB_ENV"
+
+      - name: Tipos, código morto e build
+        run: |
+          npm run check
+          npm run knip
+          npm run build
+
+      - name: Instalar navegador do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes E2E no build
+        run: npm run test:e2e
+
+      - name: Testes E2E no site no ar
+        run: BASE_URL="$SITE_URL" npm run test:e2e
+
+      # Enquanto o upgrade do Astro não sai, o audit só avisa (aparece no resumo da execução).
+      - name: Dependências vulneráveis (npm audit)
+        continue-on-error: true
+        run: npm audit --audit-level=high
+
+      - name: Avisar com uma issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          corpo="A rotina de $(date -u +%d/%m/%Y) falhou. O que quebrou: $LINK"
+          num=$(gh issue list --label rotina --state open --json number --jq '.[0].number // empty')
+          if [ -n "$num" ]; then
+            gh issue comment "$num" --body "$corpo"
+          else
+            gh label create rotina --color D93F0B --description "Falha da rotina semanal" --force
+            gh issue create --title "Rotina semanal falhou" --body "$corpo" --label rotina
+          fi
