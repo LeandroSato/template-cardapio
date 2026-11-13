@@ -1,0 +1,27 @@
+---
+import { cardapio, DIAS, rotuloDias } from '../lib/cardapio';
+// Lista de horários. O script hoje.ts destaca a linha de hoje pelo atributo data-horario.
+interface Props {
+  class?: string;
+}
+const { class: classe = '' } = Astro.props;
+const { horarios } = cardapio;
+// "11:00" → "11h", "18:30" → "18h30"
+const horaCurta = (hhmm: string) => hhmm.replace(/:00$/, 'h').replace(':', 'h');
+const diasFechados = DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)));
+---
+
+<dl class={`divide-y divide-rejunte border-y border-rejunte ${classe}`}>
+  {horarios.map((h) => (
+    <div class="flex justify-between gap-4 px-2 py-2.5" data-horario={h.dias.join(' ')}>
+      <dt>{h.rotulo}</dt>
+      <dd class="font-bold tabular-nums">{horaCurta(h.abre)} às {horaCurta(h.fecha)}</dd>
+    </div>
+  ))}
+  {diasFechados.length > 0 && (
+    <div class="flex justify-between gap-4 px-2 py-2.5" data-horario={diasFechados.join(' ')}>
+      <dt>{rotuloDias(diasFechados)}</dt>
+      <dd class="font-bold">Fechado</dd>
+    </div>
+  )}
+</dl>

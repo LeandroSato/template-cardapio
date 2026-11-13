@@ -83,8 +83,8 @@ O Cloudflare gera uma **prévia** do branch (`ajusta-precos.<projeto>.pages.dev`
 ```
 src/
 ├── data/cardapio.json      ← único arquivo que muda por cliente
-├── lib/                    ← tipos, preço em R$, links de mapa e mensagem do WhatsApp
-├── components/             ← Capa, NavCategorias, Categoria, Comanda, Delivery, Localizacao, SeoLocal
+├── lib/                    ← tipos, preço em R$, links de mapa e mensagem do WhatsApp, nomes dos ícones (icones.ts)
+├── components/             ← Capa, NavCategorias, Categoria, Comanda, Delivery, Localizacao, Horarios, Icone, SeoLocal
 ├── scripts/                ← hoje.ts (dia/horário), carrinho.ts (comanda), navegacao.ts
 ├── layouts/Base.astro      ← fontes, cores da marca e <head>
 └── pages/index.astro
@@ -92,3 +92,11 @@ scripts/gerar-og.mjs        ← gera public/og.png
 ```
 
 As fontes são Alfa Slab One (títulos e preços), Figtree (texto) e Courier Prime (comanda). Ficam hospedadas no próprio site, via Fontsource.
+
+## Ícones
+
+Os ícones vêm do [react-icons](https://react-icons.github.io/react-icons/) (família Lucide, mais a marca do WhatsApp). Use sempre `<Icone nome="..." />`; os nomes ficam em `src/lib/icones.ts`. O `react` e o `react-dom` só rodam no build, para gerar o SVG: o navegador recebe SVG puro, sem JavaScript de React.
+
+## Layout
+
+A página usa um contêiner largo (`.conteiner`, até 72rem). No celular é uma coluna; a partir de 768px os pratos viram duas colunas, e a partir de 1024px a capa ganha o cartão de endereço e horário e a barra de pedido vira uma pílula flutuante.

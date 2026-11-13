@@ -10,7 +10,7 @@ function destacarCategoriaVisivel() {
       a.setAttribute('aria-current', ativo ? 'true' : 'false');
       if (ativo) {
         // Rola só a barra (não a página) para o chip ativo aparecer.
-        const esquerda = a.offsetLeft - (barra.clientWidth - a.offsetWidth) / 2;
+        const esquerda = a.offsetLeft - barra.offsetLeft - (barra.clientWidth - a.offsetWidth) / 2;
         barra.scrollTo({ left: esquerda, behavior: 'smooth' });
       }
     });
