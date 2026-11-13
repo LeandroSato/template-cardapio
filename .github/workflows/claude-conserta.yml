@@ -34,7 +34,7 @@ jobs:
       BRANCH: ${{ github.event.workflow_run.head_branch }}
       MAX_TENTATIVAS: 3
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
@@ -57,7 +57,7 @@ jobs:
           gh pr edit "$BRANCH" --add-label segurar
           gh pr comment "$BRANCH" --body "Tentei consertar $MAX_TENTATIVAS vezes e o CI continua falhando ($LINK). Parei e marquei com \`segurar\`. Preciso de você aqui; quando resolver, tire o rótulo."
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: fromJSON(steps.tentativas.outputs.n) < 3
         with:
           node-version-file: package.json
