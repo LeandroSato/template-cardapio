@@ -20,3 +20,6 @@ Thumbs.db
 # testes
 test-results/
 playwright-report/
+
+# cache e config local do impeccable
+.impeccable/
