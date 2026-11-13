@@ -1,4 +1,4 @@
-import { cardapio, DIAS, NOME_DIA, formatarPreco, type Dia, type Item } from '../lib/cardapio';
+import { cardapio, DIAS, NOME_DIA, formatarPreco, horaCurta, type Dia, type Item } from '../lib/cardapio';
 
 const SEMANA: Record<string, Dia> = { Sun: 'dom', Mon: 'seg', Tue: 'ter', Wed: 'qua', Thu: 'qui', Fri: 'sex', Sat: 'sab' };
 
@@ -31,7 +31,6 @@ const paraMinutos = (hhmm: string) => {
   const [h, m] = hhmm.split(':').map(Number);
   return h * 60 + m;
 };
-const horaCurta = (hhmm: string) => hhmm.replace(/:00$/, 'h').replace(':', 'h');
 
 const todosItens: Item[] = cardapio.categorias.flatMap((c) => c.itens);
 

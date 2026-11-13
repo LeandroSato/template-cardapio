@@ -20,6 +20,8 @@ const { restaurante: r, pedido } = cardapio;
       </span>
       <span class="rounded-md bg-gema px-2.5 py-1 text-tinta tabular-nums lg:rounded-full" data-barra-total hidden></span>
     </button>
+    <!-- Avisa o leitor de tela quando a comanda muda (o carrinho.ts escreve aqui). -->
+    <p role="status" class="sr-only" data-barra-aviso></p>
   </div>
 </div>
 

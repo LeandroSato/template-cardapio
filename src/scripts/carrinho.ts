@@ -43,6 +43,8 @@ function mudar(id: string, delta: number) {
   desenhar();
 }
 
+let jaIniciou = false;
+
 const pluralItens = (n: number) => `${n} ${n === 1 ? 'item' : 'itens'}`;
 
 function desenhar() {
@@ -65,6 +67,9 @@ function desenhar() {
   if (botaoCapa) {
     const qtd = comanda.get(botaoCapa.dataset.adicionar ?? '') ?? 0;
     botaoCapa.textContent = qtd > 0 ? `+ Mais um (${qtd})` : 'Adicionar';
+    // O texto visível não diz qual é o prato; o nome acessível diz.
+    const nome = itens.get(botaoCapa.dataset.adicionar ?? '')?.nome;
+    if (nome) botaoCapa.setAttribute('aria-label', `${qtd > 0 ? 'Mais um' : 'Adicionar'} ${nome}`);
   }
 
   // Barra fixa
@@ -75,6 +80,9 @@ function desenhar() {
     barraTotal.hidden = qtdTotal === 0;
     barraTotal.textContent = total;
   }
+  // Leitor de tela: avisa a mudança da comanda (não no primeiro desenho, para não falar ao abrir a página).
+  const aviso = document.querySelector('[data-barra-aviso]');
+  if (aviso && jaIniciou) aviso.textContent = qtdTotal > 0 ? `Comanda: ${pluralItens(qtdTotal)}, total ${total}` : 'Comanda vazia';
 
   // Comanda aberta
   const lista = document.querySelector<HTMLElement>('[data-comanda-lista]');
@@ -105,6 +113,29 @@ function desenhar() {
   document.querySelector<HTMLButtonElement>('[data-comanda-enviar]')!.disabled = vazia;
   const totalEl = document.querySelector('[data-comanda-total]');
   if (totalEl) totalEl.textContent = total;
+}
+
+/**
+ * Ao tocar em + ou −, o botão pode sumir (o "Adicionar" vira contador, a linha da comanda é refeita).
+ * Sem isto o foco do teclado cai no <body>; aqui ele vai para o botão equivalente.
+ */
+function manterFoco(alvo: HTMLElement, id: string, acao: 'adicionar' | 'remover') {
+  if (alvo.isConnected && alvo.offsetParent !== null) return;
+  const chave = CSS.escape(id);
+  const lista = alvo.closest('[data-comanda-lista]') ?? (alvo.isConnected ? null : document.querySelector('[data-comanda-lista]'));
+  let novo: HTMLElement | null = null;
+  if (lista) {
+    novo =
+      lista.querySelector<HTMLElement>(`[data-${acao}="${chave}"]`) ??
+      lista.querySelector<HTMLElement>('button') ??
+      document.querySelector<HTMLElement>('[data-fechar-comanda]');
+  } else {
+    const controle = document.querySelector(`[data-controle="${chave}"]`);
+    novo = controle?.querySelector<HTMLElement>(
+      (comanda.get(id) ?? 0) > 0 ? '[data-stepper] [data-adicionar]' : '[data-botao-adicionar]',
+    ) ?? null;
+  }
+  novo?.focus();
 }
 
 function enviar(form: HTMLFormElement) {
@@ -144,8 +175,10 @@ export function iniciarCarrinho(dia: Dia) {
   document.addEventListener('click', (ev) => {
     const alvo = (ev.target as HTMLElement).closest<HTMLElement>('[data-adicionar], [data-remover]');
     if (!alvo || (alvo as HTMLButtonElement).disabled) return;
-    if (alvo.dataset.adicionar) mudar(alvo.dataset.adicionar, +1);
-    else if (alvo.dataset.remover) mudar(alvo.dataset.remover, -1);
+    const id = alvo.dataset.adicionar ?? alvo.dataset.remover!;
+    const acao = alvo.dataset.adicionar ? 'adicionar' : 'remover';
+    mudar(id, acao === 'adicionar' ? +1 : -1);
+    manterFoco(alvo, id, acao);
   });
 
   document.querySelectorAll('[data-abrir-comanda]').forEach((b) => b.addEventListener('click', () => dialogo.showModal()));
@@ -174,4 +207,5 @@ export function iniciarCarrinho(dia: Dia) {
   });
 
   desenhar();
+  jaIniciou = true;
 }

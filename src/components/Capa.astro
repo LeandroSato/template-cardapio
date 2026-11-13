@@ -14,7 +14,7 @@ const padrao = pratosDoDia[0];
   <div class="conteiner flex items-center gap-3 pt-5 pb-2 lg:pt-7">
     <img src={r.logo} alt="" width="56" height="56" class="size-11 shrink-0 rounded-full bg-papel lg:size-14" />
     <div class="min-w-0">
-      <p class="font-letreiro text-xl leading-tight lg:text-3xl">{r.nome}</p>
+      <h1 class="font-letreiro text-xl leading-tight lg:text-3xl">{r.nome}</h1>
       <p class="text-sm opacity-85 lg:text-base">{r.tipoComida} · {e.bairro}</p>
     </div>
     <!-- O script hoje.ts escreve o texto em [data-status-aberto] e tira o "hidden" dele; a pílula aparece junto. -->
@@ -33,13 +33,13 @@ const padrao = pratosDoDia[0];
           <Icone nome="talher" class="size-5" />
           <span data-prato-hoje-dia>Prato do dia</span>
         </p>
-        <h1
+        <h2
           id="prato-hoje-nome"
           class="font-letreiro mt-3 text-[2.6rem] leading-[1.02] text-balance lg:text-5xl xl:text-6xl"
           data-prato-hoje-nome
         >
           {padrao.nome}
-        </h1>
+        </h2>
         <p class="mt-4 max-w-prose text-base leading-relaxed opacity-90 lg:text-lg" data-prato-hoje-descricao>
           {padrao.descricao}
         </p>

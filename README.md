@@ -18,7 +18,7 @@ npm run dev      # http://localhost:4321
 npm run build    # gera a pasta dist/
 ```
 
-Precisa do Node 22.12 ou mais novo. O Astro está fixado na versão 6, porque o Astro 7 exige o Node 22.23.
+Precisa do Node 22.12 ou mais novo. O Astro está na versão 7.
 
 ### Testar outro dia e horário
 
@@ -95,7 +95,7 @@ As fontes são Alfa Slab One (títulos e preços), Figtree (texto) e Courier Pri
 
 ## Ícones
 
-Os ícones vêm do [react-icons](https://react-icons.github.io/react-icons/) (família Lucide, mais a marca do WhatsApp). Use sempre `<Icone nome="..." />`; os nomes ficam em `src/lib/icones.ts`. O `react` e o `react-dom` só rodam no build, para gerar o SVG: o navegador recebe SVG puro, sem JavaScript de React.
+Os ícones vêm do [react-icons](https://react-icons.github.io/react-icons/) (família Lucide, mais a marca do WhatsApp). Use sempre `<Icone nome="..." />`; os nomes ficam em `src/lib/icones.ts`. O `react` e o `react-dom` (em `devDependencies`) só rodam no build, para gerar o SVG: o navegador recebe SVG puro, sem JavaScript de React.
 
 ## Layout
 
