@@ -22,16 +22,31 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* a barra de rolagem não desloca o layout quando a comanda trava a página */
+    scrollbar-gutter: stable;
     /* espaço para a barra de categorias fixa ao pular para uma seção */
     scroll-padding-top: 4.5rem;
+    /* a barra de pedido fixa não cobre o item em foco */
+    scroll-padding-bottom: 6rem;
     -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-papel text-tinta font-corpo antialiased;
   }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+  /* Com a comanda aberta, só ela rola (o fundo fica parado). */
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+  /* verde no fundo claro (contraste 3:1+); gema só sobre a parede verde */
   :focus-visible {
-    outline: 3px solid var(--marca-destaque);
+    outline: 3px solid var(--marca-primaria);
     outline-offset: 2px;
+  }
+  .bg-parede :focus-visible {
+    outline-color: var(--marca-destaque);
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -43,6 +58,11 @@
 }
 
 @layer components {
+  /* Contêiner único do site: coluna confortável no celular, 72rem no desktop. */
+  .conteiner {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
   /* Faixa de azulejo branco com rejunte, como a barra das paredes de boteco. */
   .azulejo {
     background-color: var(--color-folha);

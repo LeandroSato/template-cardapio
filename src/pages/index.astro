@@ -16,16 +16,17 @@ const ano = new Date().getFullYear();
   <Capa />
   <NavCategorias />
 
-  <main class="pb-32">
+  <main>
     {categorias.map((c) => <Categoria categoria={c} />)}
     <Delivery />
     <Localizacao />
 
-    <footer class="mx-auto mt-12 max-w-xl px-4 text-sm text-apagado">
-      <p>Preços sujeitos a alteração sem aviso. Imagens meramente ilustrativas.</p>
-      <p class="mt-1">© {ano} {r.nome}</p>
-    </footer>
   </main>
+
+  <footer class="conteiner mt-12 pb-32 text-sm text-apagado">
+    <p>Preços sujeitos a alteração sem aviso. Imagens meramente ilustrativas.</p>
+    <p class="mt-1">© {ano} {r.nome}</p>
+  </footer>
 
   <Comanda />
 </Base>

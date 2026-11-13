@@ -1,4 +1,6 @@
 ---
+import Icone from './Icone.astro';
+
 interface Props {
   id: string;
   nome: string;
@@ -12,13 +14,30 @@ const { id, nome } = Astro.props;
     type="button"
     data-adicionar={id}
     data-botao-adicionar
-    class="min-h-11 rounded-lg border-2 border-parede px-4 font-bold text-parede active:bg-parede active:text-papel disabled:border-rejunte disabled:text-apagado"
+    class="min-h-11 rounded-lg border-2 border-parede px-4 font-bold text-parede transition-colors duration-150 hover:bg-parede hover:text-papel active:bg-parede active:text-papel disabled:border-rejunte disabled:text-apagado disabled:hover:bg-transparent disabled:hover:text-apagado"
   >
-    Adicionar<span class="sr-only"> {nome}</span>
+    <span class="flex items-center gap-1.5">
+      <Icone nome="mais" class="size-4" />
+      <span>Adicionar<span class="sr-only"> {nome}</span></span>
+    </span>
   </button>
   <div class="hidden items-center rounded-lg bg-parede text-papel" data-stepper>
-    <button type="button" data-remover={id} class="size-11 text-2xl leading-none" aria-label={`Tirar um ${nome}`}>−</button>
+    <button
+      type="button"
+      data-remover={id}
+      class="flex size-11 items-center justify-center rounded-l-lg transition-colors duration-150 hover:bg-papel/15"
+      aria-label={`Tirar um ${nome}`}
+    >
+      <Icone nome="menos" class="size-5" />
+    </button>
     <span class="min-w-7 text-center font-bold tabular-nums" data-qtd aria-live="polite">0</span>
-    <button type="button" data-adicionar={id} class="size-11 text-2xl leading-none" aria-label={`Mais um ${nome}`}>+</button>
+    <button
+      type="button"
+      data-adicionar={id}
+      class="flex size-11 items-center justify-center rounded-r-lg transition-colors duration-150 hover:bg-papel/15"
+      aria-label={`Mais um ${nome}`}
+    >
+      <Icone nome="mais" class="size-5" />
+    </button>
   </div>
 </div>

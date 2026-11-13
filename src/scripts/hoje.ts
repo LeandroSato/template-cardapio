@@ -106,7 +106,8 @@ function itensDoDia(dia: Dia) {
     if (dias.includes(dia)) {
       li.querySelector('[data-rotulo-hoje]')?.classList.remove('hidden');
     } else {
-      li.classList.add('opacity-60');
+      // só a foto esmaece: o texto precisa continuar legível (contraste AA)
+      li.querySelector('img, .prato-vazio')?.classList.add('opacity-50');
       const botao = li.querySelector<HTMLButtonElement>('[data-botao-adicionar]');
       if (botao) {
         botao.disabled = true;
@@ -119,7 +120,7 @@ function itensDoDia(dia: Dia) {
 function horarioDeHoje(dia: Dia) {
   document.querySelectorAll<HTMLElement>('[data-horario]').forEach((linha) => {
     if ((linha.dataset.horario ?? '').split(' ').includes(dia)) {
-      linha.classList.add('bg-gema/25', 'font-bold', '-mx-2', 'px-2');
+      linha.classList.add('bg-gema/25', 'font-bold');
       linha.querySelector('dt')?.insertAdjacentHTML('beforeend', '<span class="sr-only"> (hoje)</span>');
     }
   });

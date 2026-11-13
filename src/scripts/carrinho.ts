@@ -148,7 +148,7 @@ export function iniciarCarrinho(dia: Dia) {
     else if (alvo.dataset.remover) mudar(alvo.dataset.remover, -1);
   });
 
-  document.querySelector('[data-abrir-comanda]')?.addEventListener('click', () => dialogo.showModal());
+  document.querySelectorAll('[data-abrir-comanda]').forEach((b) => b.addEventListener('click', () => dialogo.showModal()));
   document.querySelector('[data-fechar-comanda]')?.addEventListener('click', () => dialogo.close());
   // Toque fora da comanda fecha.
   dialogo.addEventListener('click', (ev) => {

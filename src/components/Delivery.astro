@@ -1,26 +1,32 @@
 ---
 import { linksDelivery } from '../lib/cardapio';
+import Icone from './Icone.astro';
 const links = linksDelivery();
 ---
 
 {links.length > 0 && (
-  <section aria-labelledby="titulo-delivery" class="mx-auto mt-10 max-w-xl px-4">
-    <h2 id="titulo-delivery" class="font-letreiro text-2xl text-parede">Também estamos nos apps</h2>
-    <p class="mt-1 text-apagado">Prefere pedir pelo app de entrega? É só escolher.</p>
-    <ul class="mt-4 flex flex-wrap gap-3">
-      {links.map((l) => (
-        <li>
-          <a
-            href={l.url}
-            target="_blank"
-            rel="noopener"
-            class="flex min-h-12 items-center rounded-lg border-2 border-tinta px-5 font-bold"
-          >
-            Pedir no {l.nome}
-            <span class="sr-only"> (abre em outra aba)</span>
-          </a>
-        </li>
-      ))}
-    </ul>
+  <section aria-labelledby="titulo-delivery" class="conteiner mt-12">
+    <div class="rounded-2xl border border-rejunte bg-folha p-5 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:p-7">
+      <div>
+        <h2 id="titulo-delivery" class="font-letreiro text-2xl text-parede">Também estamos nos apps</h2>
+        <p class="mt-1 text-apagado">Prefere pedir pelo app de entrega? É só escolher.</p>
+      </div>
+      <ul class="mt-4 flex flex-wrap gap-3 lg:mt-0 lg:justify-end">
+        {links.map((l) => (
+          <li>
+            <a
+              href={l.url}
+              target="_blank"
+              rel="noopener"
+              class="flex min-h-12 items-center gap-2 rounded-lg border-2 border-tinta px-5 font-bold transition-colors duration-150 hover:bg-tinta hover:text-papel"
+            >
+              Pedir no {l.nome}
+              <Icone nome="externo" class="size-4" />
+              <span class="sr-only"> (abre em outra aba)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 )}

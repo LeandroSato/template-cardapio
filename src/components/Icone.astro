@@ -1,0 +1,17 @@
+---
+// Renderiza um ícone do react-icons como SVG estático no build: nenhum JavaScript vai para o navegador.
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { icones, type NomeIcone } from '../lib/icones';
+
+interface Props {
+  nome: NomeIcone;
+  class?: string;
+}
+const { nome, class: classe = 'size-5' } = Astro.props;
+const svg = renderToStaticMarkup(
+  createElement(icones[nome], { className: `${classe} shrink-0`, 'aria-hidden': true, focusable: false }),
+);
+---
+
+<Fragment set:html={svg} />
