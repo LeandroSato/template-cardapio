@@ -1,13 +1,11 @@
 ---
-import { cardapio, DIAS, rotuloDias } from '../lib/cardapio';
+import { cardapio, DIAS, horaCurta, rotuloDias } from '../lib/cardapio';
 // Lista de horários. O script hoje.ts destaca a linha de hoje pelo atributo data-horario.
 interface Props {
   class?: string;
 }
 const { class: classe = '' } = Astro.props;
 const { horarios } = cardapio;
-// "11:00" → "11h", "18:30" → "18h30"
-const horaCurta = (hhmm: string) => hhmm.replace(/:00$/, 'h').replace(':', 'h');
 const diasFechados = DIAS.filter((d) => !horarios.some((h) => h.dias.includes(d)));
 ---
 

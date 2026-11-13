@@ -66,3 +66,47 @@ test('no desktop o cartão de endereço da capa aparece ao lado do prato do dia'
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Horário e endereço' })).toBeVisible();
 });
+
+test('o único h1 é o nome do restaurante e o prato do dia é h2', async ({ page }) => {
+  await page.goto('/?dia=qua&hora=12:30');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(restaurante.nome);
+  const prato = await page.locator('[data-prato-hoje-nome]').innerText();
+  await expect(page.getByRole('heading', { level: 2, name: prato })).toBeVisible();
+});
+
+test('o foco acompanha quem adiciona e tira itens do cardápio', async ({ page }) => {
+  await page.goto('/');
+  const controle = page.locator('[data-item]:not([data-dias]) [data-controle]').first();
+  await controle.locator('[data-botao-adicionar]').click();
+  await expect(page.locator(':focus')).toHaveAttribute('aria-label', /^Mais um /);
+  await page.locator(':focus').click();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator(':focus')).toHaveAttribute('aria-label', /^Tirar um /);
+  await page.locator(':focus').click();
+  await page.locator(':focus').click();
+  await expect(page.locator(':focus')).toHaveAttribute('data-botao-adicionar', '');
+});
+
+test('o foco fica na comanda ao mudar a quantidade', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-item]:not([data-dias]) [data-botao-adicionar]').first().click();
+  await page.locator('[data-abrir-comanda]:visible').first().click();
+  const mais = page.locator('[data-comanda-lista] [data-linha-mais]').first();
+  await mais.click();
+  await expect(page.locator(':focus')).toHaveAttribute('aria-label', /^Mais um /);
+  await expect(page.locator('[data-comanda-lista] [data-linha-qtd]').first()).toHaveText('2');
+});
+
+test('a barra de pedido avisa o leitor de tela quando a comanda muda', async ({ page }) => {
+  await page.goto('/');
+  const aviso = page.locator('[data-barra-aviso]');
+  await expect(aviso).toHaveAttribute('role', 'status');
+  await page.locator('[data-item]:not([data-dias]) [data-botao-adicionar]').first().click();
+  await expect(aviso).toContainText('1 item');
+});
+
+test('o botão Adicionar da capa diz qual é o prato', async ({ page }) => {
+  await page.goto('/?dia=qua&hora=12:30');
+  const prato = await page.locator('[data-prato-hoje-nome]').innerText();
+  await expect(page.locator('[data-prato-hoje-botao]')).toHaveAttribute('aria-label', `Adicionar ${prato}`);
+});

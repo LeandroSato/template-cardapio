@@ -4,6 +4,8 @@ import '@fontsource-variable/figtree/wght.css';
 import '@fontsource/courier-prime/400.css';
 import '@fontsource/courier-prime/700.css';
 import '../styles/global.css';
+import letreiro from '@fontsource/alfa-slab-one/files/alfa-slab-one-latin-400-normal.woff2?url';
+import corpo from '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url';
 import SeoLocal from '../components/SeoLocal.astro';
 import { cardapio } from '../lib/cardapio';
 
@@ -22,6 +24,8 @@ const variaveis = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content={marca.primaria} />
+    <link rel="preload" as="font" type="font/woff2" href={letreiro} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={corpo} crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <SeoLocal />
   </head>

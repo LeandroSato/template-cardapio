@@ -91,6 +91,11 @@ export function rotuloDias(dias: Dia[]): string {
 const formatador =new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 /** 34.9 → "R$ 34,90" (espaço normal no lugar do espaço fino do Intl). */
+/** "11:00" → "11h", "18:30" → "18h30" */
+export function horaCurta(hhmm: string): string {
+  return hhmm.replace(/:00$/, 'h').replace(':', 'h');
+}
+
 export function formatarPreco(valor: number): string {
   return formatador.format(valor).replace(/ /g, ' ');
 }
