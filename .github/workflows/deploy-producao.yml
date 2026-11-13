@@ -1,0 +1,52 @@
+name: Registrar deploy de produção
+
+# A Cloudflare Pages publica sozinha e só avisa via check. Este workflow espera esse
+# check da `main` terminar com sucesso e registra o deploy no GitHub (ambiente `production`).
+# Assim o link do site aparece em "Deployments", na lateral do repositório.
+# Prévias de PR não são registradas aqui: elas ficam só no comentário da Cloudflare no PR.
+on:
+  check_run:
+    types: [completed]
+
+permissions:
+  deployments: write
+  contents: read
+
+jobs:
+  registra:
+    if: >-
+      github.event.check_run.app.slug == 'cloudflare-workers-and-pages' &&
+      github.event.check_run.conclusion == 'success' &&
+      github.event.check_run.check_suite.head_branch == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Cria o deployment e marca como sucesso
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.check_run.head_sha }}
+          RESUMO: ${{ github.event.check_run.output.summary }}
+          LOG_URL: ${{ github.event.check_run.details_url }}
+        run: |
+          # O resumo da Cloudflare traz a URL do deploy (https://<hash>.<projeto>.pages.dev).
+          # Tirando o hash sobra o endereço de produção (<projeto>.pages.dev).
+          URL_DEPLOY=$(printf '%s' "$RESUMO" | grep -oE 'https://[a-z0-9]+\.[a-z0-9-]+\.pages\.dev' | head -n1 || true)
+          if [ -z "$URL_DEPLOY" ]; then
+            echo "Não achei a URL do deploy no resumo da Cloudflare; nada a registrar."
+            exit 0
+          fi
+          URL_PROD="https://${URL_DEPLOY#https://*.}"
+
+          # required_contexts vazio: o check da Cloudflare já passou e não queremos esperar outros.
+          ID=$(printf '{"ref":"%s","environment":"production","production_environment":true,"transient_environment":false,"auto_merge":false,"required_contexts":[],"description":"Deploy da main na Cloudflare Pages"}' "$SHA" \
+            | gh api "repos/$REPO/deployments" --input - --jq .id)
+
+          gh api "repos/$REPO/deployments/$ID/statuses" \
+            -f state=success \
+            -f environment=production \
+            -f environment_url="$URL_PROD" \
+            -f log_url="$LOG_URL" \
+            -f description="Publicado na Cloudflare Pages"
+
+          echo "Registrado: $URL_PROD"
