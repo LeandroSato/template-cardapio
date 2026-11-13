@@ -120,7 +120,7 @@ jobs:
       matrix:
         pr: ${{ fromJSON(needs.atualizar.outputs.conflitos) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ matrix.pr.branch }}
           fetch-depth: 0
